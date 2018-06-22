@@ -1,0 +1,27 @@
+{
+  "name": "todo-app-api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "SaravananVijayappan",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server/app.js",
+    "start-watch": "nodemon server/app.js",
+    "test": "mocha **/*.test.js",
+    "test-watch": "nodemon --exec \"mocha server/*.test.js\""
+  },
+  "engines": {
+    "node": "10.4.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "eslint": "^4.19.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.1.5"
+  },
+  "devDependencies": {
+    "expect": "1.20.2",
+    "mocha": "^5.2.0",
+    "supertest": "2.0.0"
+  }
+}
