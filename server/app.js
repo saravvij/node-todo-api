@@ -1,12 +1,15 @@
+require('./config/config.js');
+
 const express = require('express');
 const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/Todo');
 const {User} = require('./models/User');
 
+
 const app = express();
-const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -36,9 +39,28 @@ app.get('/todos', (req, res) => {
     .catch(err => res.send(err));
 });
 
-app.put('/todos/:id', (req, res) => {
-    Todo.findByIdAndUpdate(req.params.id, req.body, {new:true})
-    .then( doc => res.status(200).send(doc))
+app.patch('/todos/:id', (req, res) => {
+    const id = req.params.id;
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    const patchDoc = {};
+    if(req.body.text) {
+        patchDoc.text = req.body.text;
+    }
+    if(req.body.completed != undefined) {
+        patchDoc.completed = req.body.completed;
+    }
+
+    patchDoc.completedAt = patchDoc.completed ? new Date().getTime() : null;
+
+    Todo.findByIdAndUpdate(id, patchDoc, {new:true})
+    .then( doc => {
+        if(!doc || doc === null) {
+            return res.status(404).send();
+        }
+        res.status(200).send(doc)
+    })
     .catch(err => res.status(500).send(err));
 });
 
@@ -48,6 +70,8 @@ app.delete('/todos/:id', (req, res) => {
     .catch(err => res.status(500).send(err));
 });
 
-app.listen(port, () => console.log(`Todo API service started and listening at port ${port}`));
+app.listen(process.env.PORT, () => {
+    console.log(`Todo API service started and listening at port ${process.env.PORT}`);
+});
 
 module.exports = { app };
