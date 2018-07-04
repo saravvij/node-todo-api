@@ -11,7 +11,7 @@
     "test-watch": "nodemon --exec \"mocha server/*.test.js\""
   },
   "engines": {
-    "node": "10.4.0"
+    "node": "9.11.1"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
